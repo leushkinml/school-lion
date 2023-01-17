@@ -10,4 +10,5 @@ public class SchoolLionApplication {
         SpringApplication.run(SchoolLionApplication.class, args);
     }
 
+
 }
