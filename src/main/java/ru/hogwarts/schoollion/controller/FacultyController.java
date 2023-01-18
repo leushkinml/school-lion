@@ -32,6 +32,11 @@ public class FacultyController {
 //        return ResponseEntity.ok(createdFaculty);
 //    }
 
+    @GetMapping   // GET http://localhost:8080/faculty
+    public ResponseEntity<Collection<Faculty>> getAllFaculty() {
+        return ResponseEntity.ok(facultyService.getAllFaculty());
+    }
+
     @GetMapping("{facultyId}")
     public ResponseEntity<Faculty> getFaculty(@PathVariable Long facultyId) {
         Faculty faculty = facultyService.getFacultyById(facultyId);
@@ -42,9 +47,14 @@ public class FacultyController {
     }
 
     @GetMapping("{facultyColor}")   // GET http://localhost:8080/faculty/red
-    public ResponseEntity<Collection<Faculty>> getAllFacultyInColor(@PathVariable String facultyColor) {
-        return ResponseEntity.ok(facultyService.getAllFacultyInColor(facultyColor));
+    public ResponseEntity<Collection<Faculty>> getAllFacultyByColor(@PathVariable String facultyColor) {
+        return ResponseEntity.ok(facultyService.findFacultiesByColor(facultyColor));
     }
+
+//    @GetMapping("{facultyColor}")   // GET http://localhost:8080/faculty/red
+//    public ResponseEntity<Collection<Faculty>> getAllFacultyInColor(@PathVariable String facultyColor) {
+//        return ResponseEntity.ok(facultyService.getAllFacultyInColor(facultyColor));
+//    }
 
 //    @GetMapping
 //    public ResponseEntity<Collection<Faculty>> findFaculties(@RequestParam(required = false) String color) {
@@ -65,10 +75,7 @@ public class FacultyController {
 
     @DeleteMapping("{facultyId}")
     public ResponseEntity<Faculty> deleteFaculty(@PathVariable Long facultyId) {
-        Faculty faculty = facultyService.getFacultyById(facultyId);
-        if (faculty == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(facultyService.deleteFaculty(facultyId));
+        facultyService.deleteFaculty(facultyId);
+        return ResponseEntity.ok().build();
     }
 }
