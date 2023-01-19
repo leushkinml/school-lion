@@ -7,6 +7,5 @@ import ru.hogwarts.schoollion.model.Student;
 import java.util.List;
 
 public interface FacultyRepository extends JpaRepository<Faculty, Long> {
-
     List<Faculty> findFacultiesByColor(String color);
 }
