@@ -1,6 +1,7 @@
 package ru.hogwarts.schoollion.service;
 
 import org.springframework.stereotype.Service;
+import ru.hogwarts.schoollion.model.Faculty;
 import ru.hogwarts.schoollion.model.Student;
 import ru.hogwarts.schoollion.repository.StudentRepository;
 
@@ -38,6 +39,18 @@ public class StudentService {
 
     public Collection<Student> getAllStudent() {
         return studentRepository.findAll();
+    }
+
+    public List<Student> findStudentByAgeBetween(int minAge, int maxAge) {
+        return studentRepository.findStudentByAgeBetween(minAge, maxAge);
+    }
+
+
+
+
+// Варианты кода получения списка студентов факультета.
+    public List<Student> findStudentByFaculty(Faculty faculty) {
+        return studentRepository.findStudentByFaculty(faculty);
     }
 }
 

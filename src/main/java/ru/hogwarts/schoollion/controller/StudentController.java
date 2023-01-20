@@ -3,7 +3,9 @@ package ru.hogwarts.schoollion.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.hogwarts.schoollion.model.Faculty;
 import ru.hogwarts.schoollion.model.Student;
+import ru.hogwarts.schoollion.service.FacultyService;
 import ru.hogwarts.schoollion.service.StudentService;
 
 import java.util.Collection;
@@ -13,9 +15,11 @@ import java.util.Collection;
 public class StudentController {
 
     private final StudentService studentService;
+    private final FacultyService facultyService;
 
-    public StudentController(StudentService studentService) {
+    public StudentController(StudentService studentService, FacultyService facultyService) {
         this.studentService = studentService;
+        this.facultyService = facultyService;
     }
 
     @PostMapping
@@ -42,6 +46,11 @@ public class StudentController {
         return ResponseEntity.ok(studentService.findStudentByAge(studentAge));
     }
 
+    @GetMapping("{minAge}&{maxAge}")   // GET http://localhost:8080/student/
+    public ResponseEntity<Collection<Student>> findStudentByAgeBetween(@PathVariable int minAge, @PathVariable int maxAge) {
+        return ResponseEntity.ok(studentService.findStudentByAgeBetween(minAge, maxAge));
+    }
+
     @PutMapping()
     public ResponseEntity<Student> updateStudent(@RequestBody Student student) {
         Student updateStudent = studentService.updateStudent(student);
@@ -55,5 +64,19 @@ public class StudentController {
     public ResponseEntity<Student> deleteStudent(@PathVariable Long studentId) {
         studentService.deleteStudent(studentId);
         return ResponseEntity.ok().build();
+    }
+
+
+    // Варианты кода получения списка студентов факультета.
+    @GetMapping("{facultyId}")
+    public ResponseEntity<Collection<Student>> findStudentByFacultyID(@PathVariable Long facultyId) {
+        Faculty faculty = facultyService.getFacultyById(facultyId);
+        return ResponseEntity.ok(studentService.findStudentByFaculty(faculty));
+    }
+
+    @GetMapping("{facultyName}")
+    public ResponseEntity<Collection<Student>> findStudentByFacultyName(@PathVariable String facultyName) {
+        Faculty faculty = (Faculty) facultyService.findFacultiesByNameIgnoreCase(facultyName);
+        return ResponseEntity.ok(studentService.findStudentByFaculty(faculty));
     }
 }
