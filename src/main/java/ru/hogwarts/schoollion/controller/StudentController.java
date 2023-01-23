@@ -3,8 +3,8 @@ package ru.hogwarts.schoollion.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.hogwarts.schoollion.model.Faculty;
 import ru.hogwarts.schoollion.model.Student;
+import ru.hogwarts.schoollion.repository.StudentRepository;
 import ru.hogwarts.schoollion.service.FacultyService;
 import ru.hogwarts.schoollion.service.StudentService;
 
@@ -15,11 +15,9 @@ import java.util.Collection;
 public class StudentController {
 
     private final StudentService studentService;
-    private final FacultyService facultyService;
 
-    public StudentController(StudentService studentService, FacultyService facultyService) {
+    public StudentController(StudentService studentService, FacultyService facultyService, StudentRepository studentRepository) {
         this.studentService = studentService;
-        this.facultyService = facultyService;
     }
 
     @PostMapping
@@ -28,27 +26,43 @@ public class StudentController {
     }
 
     @GetMapping   // GET http://localhost:8080/student
-    public ResponseEntity<Collection<Student>> getAllStudent() {
+    public ResponseEntity getStudent(@RequestParam(required = false) String name,
+                                     @RequestParam(required = false) Integer studentAge,
+                                     @RequestParam(required = false) Long studentId) {
+        if (name != null && !name.isBlank()) {
+            return ResponseEntity.ok(studentService.findStudentByNameIgnoreCase(name));
+        }
+        if (studentAge != null && studentAge > 0) {
+            return ResponseEntity.ok(studentService.findStudentByAge(studentAge));
+        }
+        if (studentId != null && studentId > 0) {
+            Student student = studentService.getStudentById(studentId);
+            if (student == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(student);
+        }
         return ResponseEntity.ok(studentService.getAllStudent());
     }
 
-    @GetMapping("{studentId}")
-    public ResponseEntity<Student> getStudent(@PathVariable Long studentId) {
-        Student student = studentService.getStudentById(studentId);
-        if (student == null) {
-            return ResponseEntity.notFound().build();
+    @GetMapping("{studentIdForReturnFaculty}")
+    public ResponseEntity getStudentByIdAndReturnFaculty(@PathVariable Long studentIdForReturnFaculty) {
+        if (studentIdForReturnFaculty != null && studentIdForReturnFaculty > 0) {
+            Student student = studentService.getStudentById(studentIdForReturnFaculty);
+            if (student == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(studentService.getStudentById(studentIdForReturnFaculty).getFaculty());
         }
-        return ResponseEntity.ok(student);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
-    @GetMapping("{studentAge}")   // GET http://localhost:8080/student/18
-    public ResponseEntity<Collection<Student>> getAllStudentByAge(@PathVariable int studentAge) {
-        return ResponseEntity.ok(studentService.findStudentByAge(studentAge));
-    }
-
-    @GetMapping("{minAge}&{maxAge}")   // GET http://localhost:8080/student/
-    public ResponseEntity<Collection<Student>> findStudentByAgeBetween(@PathVariable int minAge, @PathVariable int maxAge) {
-        return ResponseEntity.ok(studentService.findStudentByAgeBetween(minAge, maxAge));
+    @GetMapping("/age/{minAge}&{maxAge}")   // GET http://localhost:8080/student/
+    public ResponseEntity<Collection<Student>> findStudentByAgeBetween(@PathVariable Integer minAge, @PathVariable Integer maxAge) {
+        if (minAge != null && minAge > 0 && maxAge != null && maxAge > 0) {
+            return ResponseEntity.ok(studentService.findStudentByAgeBetween(minAge, maxAge));
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
     @PutMapping()
@@ -64,19 +78,5 @@ public class StudentController {
     public ResponseEntity<Student> deleteStudent(@PathVariable Long studentId) {
         studentService.deleteStudent(studentId);
         return ResponseEntity.ok().build();
-    }
-
-
-    // Варианты кода получения списка студентов факультета.
-    @GetMapping("{facultyId}")
-    public ResponseEntity<Collection<Student>> findStudentByFacultyID(@PathVariable Long facultyId) {
-        Faculty faculty = facultyService.getFacultyById(facultyId);
-        return ResponseEntity.ok(studentService.findStudentByFaculty(faculty));
-    }
-
-    @GetMapping("{facultyName}")
-    public ResponseEntity<Collection<Student>> findStudentByFacultyName(@PathVariable String facultyName) {
-        Faculty faculty = (Faculty) facultyService.findFacultiesByNameIgnoreCase(facultyName);
-        return ResponseEntity.ok(studentService.findStudentByFaculty(faculty));
     }
 }

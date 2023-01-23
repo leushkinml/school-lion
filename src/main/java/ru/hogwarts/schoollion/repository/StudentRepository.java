@@ -7,15 +7,7 @@ import ru.hogwarts.schoollion.model.Student;
 import java.util.List;
 
 public interface StudentRepository extends JpaRepository<Student, Long> {
+    List<Student> findStudentByNameIgnoreCase(String name);
     List<Student> findStudentByAge(int age);
-
     List<Student> findStudentByAgeBetween(int minAge, int maxAge);
-
-
-
-    // Варианты кода получения списка студентов факультета.
-    List<Student> findStudentByFaculty(Faculty faculty);
-
-    //Faculty findFacultyByStudentsContains(Long faculty_id);
-
 }

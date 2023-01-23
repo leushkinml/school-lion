@@ -33,20 +33,16 @@ public class FacultyService {
         facultyRepository.deleteById(facultyId);
     }
 
-    public List<Faculty> findFacultiesByColorIgnoreCase(String color) {
-        return facultyRepository.findFacultiesByColorIgnoreCase(color);
-    }
-
     public List<Faculty> findFacultiesByNameIgnoreCase(String name) {
         return facultyRepository.findFacultiesByNameIgnoreCase(name);
     }
 
-    public Collection<Faculty> getAllFaculty() {
-        return facultyRepository.findAll();
+    public List<Faculty> findFacultiesByColorIgnoreCase(String color) {
+        return facultyRepository.findFacultiesByColorIgnoreCase(color);
     }
 
-    public Faculty findFacultyByStudentsIgnoreCase(Collection<Student> students) {
-        return findFacultyByStudentsIgnoreCase(students);
+    public Collection<Faculty> getAllFaculty() {
+        return facultyRepository.findAll();
     }
 }
 

@@ -21,8 +21,12 @@ public class StudentService {
         return studentRepository.save(student);
     }
 
-    public Student getStudentById(long studentId) {
+    public Student getStudentById(Long studentId) {
         return studentRepository.findById(studentId).get();
+    }
+
+    public List<Student> findStudentByAge(int age) {
+        return studentRepository.findStudentByAge(age);
     }
 
     public Student updateStudent(Student student) {
@@ -33,10 +37,6 @@ public class StudentService {
         studentRepository.deleteById(studentId);
     }
 
-    public List<Student> findStudentByAge(int age) {
-        return studentRepository.findStudentByAge(age);
-    }
-
     public Collection<Student> getAllStudent() {
         return studentRepository.findAll();
     }
@@ -45,12 +45,8 @@ public class StudentService {
         return studentRepository.findStudentByAgeBetween(minAge, maxAge);
     }
 
-
-
-
-// Варианты кода получения списка студентов факультета.
-    public List<Student> findStudentByFaculty(Faculty faculty) {
-        return studentRepository.findStudentByFaculty(faculty);
+    public List<Student> findStudentByNameIgnoreCase(String name) {
+        return studentRepository.findStudentByNameIgnoreCase(name);
     }
 }
 

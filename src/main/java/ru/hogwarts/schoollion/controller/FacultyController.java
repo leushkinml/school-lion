@@ -5,15 +5,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.schoollion.model.Faculty;
 import ru.hogwarts.schoollion.service.FacultyService;
+import ru.hogwarts.schoollion.service.StudentService;
 
 @RestController
 @RequestMapping("faculty")
 public class FacultyController {
 
     private final FacultyService facultyService;
+    private final StudentService studentService;
 
-    public FacultyController(FacultyService facultyService) {
+    public FacultyController(FacultyService facultyService, StudentService studentService) {
         this.facultyService = facultyService;
+        this.studentService = studentService;
     }
 
     @PostMapping
@@ -22,7 +25,7 @@ public class FacultyController {
     }
 
     @GetMapping   // GET http://localhost:8080/faculty
-    public ResponseEntity getAllFaculty(@RequestParam(required = false) String name,
+    public ResponseEntity getFaculty(@RequestParam(required = false) String name,
                                         @RequestParam(required = false) String color,
                                         @RequestParam(required = false) Long id) {
         if (name != null && !name.isBlank()) {
@@ -37,13 +40,17 @@ public class FacultyController {
         return ResponseEntity.ok(facultyService.getAllFaculty());
     }
 
-//    @GetMapping("{studentName}")
-//    public ResponseEntity<String > findFacultyByStudentsIgnoreCase(@RequestParam(required = false) String studentName) {
-//        if (studentName != null && !studentName.isBlank()) {
-//            return ResponseEntity.ok(facultyService.findFacultyByStudentsIgnoreCase(studentName));
-//        }
-//        return ResponseEntity.notFound().build();
-//    }
+    @GetMapping("{facultyIdForReturnStudents}")
+    public ResponseEntity getFacultyByIdForReturnStudents(@PathVariable Long facultyIdForReturnStudents) {
+        if (facultyIdForReturnStudents != null && facultyIdForReturnStudents > 0) {
+            Faculty faculty = facultyService.getFacultyById(facultyIdForReturnStudents);
+            if (faculty == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(facultyService.getFacultyById(facultyIdForReturnStudents).getStudents());
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    }
 
     @PutMapping()
     public ResponseEntity<Faculty> updateFaculty(@RequestBody Faculty faculty) {
