@@ -33,7 +33,7 @@ public class StudentService {
         return studentRepository.save(student);
     }
 
-    public void deleteStudent(long studentId) {
+    public void deleteStudent(Long studentId) {
         studentRepository.deleteById(studentId);
     }
 
@@ -48,5 +48,8 @@ public class StudentService {
     public List<Student> findStudentByNameIgnoreCase(String name) {
         return studentRepository.findStudentByNameIgnoreCase(name);
     }
+
+
+
 }
 
