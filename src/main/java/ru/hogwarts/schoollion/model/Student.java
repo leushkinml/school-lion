@@ -19,6 +19,9 @@ public class Student {
     @JsonBackReference
     private Faculty faculty;
 
+    public Student(long id, String name, int age) {
+    }
+
     public long getId() {
         return id;
     }

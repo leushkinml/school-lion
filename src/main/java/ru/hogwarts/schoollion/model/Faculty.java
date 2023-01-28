@@ -19,6 +19,10 @@ public class Faculty {
     @JsonManagedReference
     private Collection<Student> students;
 
+    public Faculty(long id, String name, String color) {
+
+    }
+
     public long getId() {
         return id;
     }
