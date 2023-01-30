@@ -182,14 +182,14 @@ public class StudentController {
 ////        }
 //        return ResponseEntity.ok(studentService.updateStudent(student));
 //    }
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Student> deleteStudent(@PathVariable Long id) {
-//        Student deleteStudent = studentService.deleteStudentandReturn(id);
-//        if (deleteStudent == null) {
-//            return ResponseEntity.notFound().build();
-//        } else {
-//            return ResponseEntity.ok(deleteStudent);
-//        }
-//    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Student> deleteStudent(@PathVariable Long id) {
+        Student deleteStudent = studentService.deleteStudentandReturn(id);
+        if (deleteStudent == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(deleteStudent);
+        }
+    }
 }

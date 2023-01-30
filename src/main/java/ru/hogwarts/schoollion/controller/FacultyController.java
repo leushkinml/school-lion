@@ -8,6 +8,8 @@ import ru.hogwarts.schoollion.model.Faculty;
 import ru.hogwarts.schoollion.service.FacultyService;
 import ru.hogwarts.schoollion.service.StudentService;
 
+import java.util.Set;
+
 @RestController
 @RequestMapping("faculty")
 public class FacultyController {
@@ -19,10 +21,10 @@ public class FacultyController {
         this.facultyService = facultyService;
     }
 
-    @PostMapping
-    public Faculty createFaculty(@RequestBody Faculty faculty) {
-        return facultyService.createFaculty(faculty);
-    }
+//    @PostMapping
+//    public Faculty createFaculty(@RequestBody Faculty faculty) {
+//        return facultyService.createFaculty(faculty);
+//    }
 
 //    @GetMapping   // GET http://localhost:8080/faculty
 //    public ResponseEntity getFaculty(@RequestParam(required = false) String name,
@@ -52,27 +54,26 @@ public class FacultyController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
-    @PutMapping()
-    public ResponseEntity<Faculty> updateFaculty(@RequestBody Faculty faculty) {
-        Faculty updatedFaculty = facultyService.updateFaculty(faculty);
-        if (updatedFaculty == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-        return ResponseEntity.ok(updatedFaculty);
-    }
+//    @PutMapping()
+//    public ResponseEntity<Faculty> updateFaculty(@RequestBody Faculty faculty) {
+//        Faculty updatedFaculty = facultyService.updateFaculty(faculty);
+//        if (updatedFaculty == null) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+//        }
+//        return ResponseEntity.ok(updatedFaculty);
+//    }
 
-    @DeleteMapping("{facultyId}")
-    public ResponseEntity<Faculty> deleteFaculty(@PathVariable Long facultyId) {
-        facultyService.deleteFaculty(facultyId);
-        return ResponseEntity.ok().build();
-    }
-
-
+//    @DeleteMapping("{facultyId}")
+//    public ResponseEntity<Faculty> deleteFaculty(@PathVariable Long facultyId) {
+//        facultyService.deleteFaculty(facultyId);
+//        return ResponseEntity.ok().build();
+//    }
 
 
 
-// Из РАЗБОРА домашки
-    @GetMapping("/{id}")   // Из РАЗБОРА домашки
+
+    // Из РАЗБОРА домашки
+    @GetMapping("{id}") // Может нужно удалить слэш?  // Из РАЗБОРА домашки
     public Faculty getFaculty(@PathVariable Long id) {
         Faculty faculty = facultyService.getFacultyById(id);
         if (faculty == null) {
@@ -81,5 +82,39 @@ public class FacultyController {
         return faculty;
     }
 
+    @GetMapping
+    public Set<Faculty> findFacultyByColorOrNameIgnorCase(
+            @RequestParam(required = false) String color,
+            @RequestParam(required = false) String name) {
+        if (name == null) {
+            return facultyService.findByColor(color);
+        }
+        return facultyService.findFacultyByColorOrNameIgnorCase(color, name);
+    }
 
+    @PostMapping
+    public ResponseEntity<Faculty> addFaculty(@RequestBody Faculty faculty) {
+        if (faculty.getId() != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id must be empty");
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(facultyService.createFaculty(faculty));
+    }
+
+    @PutMapping
+    public ResponseEntity<Faculty> updateFaculty(@RequestBody Faculty faculty) {
+        if (faculty.getId() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id must be empty");
+        }
+        return ResponseEntity.ok(facultyService.updateFaculty(faculty));
+    }
+
+    @DeleteMapping("{id}")
+    public ResponseEntity<Faculty> deleteFaculty(@PathVariable Long id) {
+        Faculty deletedFaculty = facultyService.deleteByIdandReturn(id);
+        if (deletedFaculty == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(deletedFaculty);
+        }
+    }
 }
