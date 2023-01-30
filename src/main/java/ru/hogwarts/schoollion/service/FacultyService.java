@@ -21,7 +21,7 @@ public class FacultyService {
         return facultyRepository.save(faculty);
     }
 
-    public Faculty getFacultyById(long facultyId) {
+    public Faculty getFacultyById(Long facultyId) {
         return facultyRepository.findById(facultyId).get();
     }
 
@@ -29,7 +29,7 @@ public class FacultyService {
         return facultyRepository.save(faculty);
     }
 
-    public void deleteFaculty(long facultyId) {
+    public void deleteFaculty(Long facultyId) {
         facultyRepository.deleteById(facultyId);
     }
 

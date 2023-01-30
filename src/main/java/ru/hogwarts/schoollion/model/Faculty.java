@@ -1,5 +1,6 @@
 package ru.hogwarts.schoollion.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
@@ -11,23 +12,28 @@ public class Faculty {
 
     @Id
     @GeneratedValue
-    private long id;
+    private Long id;
     private String name;
     private String color;
 
+    // @JsonIgnore
     @OneToMany(mappedBy = "faculty")
     @JsonManagedReference
     private Collection<Student> students;
 
-    public Faculty(long id, String name, String color) {
+    public Faculty(Long id, String name, String color) {
 
     }
 
-    public long getId() {
+    public Faculty() {
+
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

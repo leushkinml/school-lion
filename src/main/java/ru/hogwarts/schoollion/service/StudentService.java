@@ -1,7 +1,6 @@
 package ru.hogwarts.schoollion.service;
 
 import org.springframework.stereotype.Service;
-import ru.hogwarts.schoollion.model.Faculty;
 import ru.hogwarts.schoollion.model.Student;
 import ru.hogwarts.schoollion.repository.StudentRepository;
 
@@ -34,7 +33,12 @@ public class StudentService {
     }
 
     public void deleteStudent(Long studentId) {
+
         studentRepository.deleteById(studentId);
+    }
+    public Student deleteStudentandReturn(Long studentId) {
+        studentRepository.deleteById(studentId);
+        return null;
     }
 
     public Collection<Student> getAllStudent() {

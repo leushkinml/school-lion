@@ -31,7 +31,7 @@ import ru.hogwarts.schoollion.service.StudentService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@WebMvcTest
+@WebMvcTest(StudentController.class)
 class StudentControllerTest {
 
     @Autowired

@@ -3,6 +3,7 @@ package ru.hogwarts.schoollion.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import ru.hogwarts.schoollion.model.Faculty;
 import ru.hogwarts.schoollion.service.FacultyService;
 import ru.hogwarts.schoollion.service.StudentService;
@@ -12,11 +13,10 @@ import ru.hogwarts.schoollion.service.StudentService;
 public class FacultyController {
 
     private final FacultyService facultyService;
-    private final StudentService studentService;
 
-    public FacultyController(FacultyService facultyService, StudentService studentService) {
+
+    public FacultyController(FacultyService facultyService) {
         this.facultyService = facultyService;
-        this.studentService = studentService;
     }
 
     @PostMapping
@@ -24,21 +24,21 @@ public class FacultyController {
         return facultyService.createFaculty(faculty);
     }
 
-    @GetMapping   // GET http://localhost:8080/faculty
-    public ResponseEntity getFaculty(@RequestParam(required = false) String name,
-                                        @RequestParam(required = false) String color,
-                                        @RequestParam(required = false) Long id) {
-        if (name != null && !name.isBlank()) {
-            return ResponseEntity.ok(facultyService.findFacultiesByNameIgnoreCase(name));
-        }
-        if (color != null && !color.isBlank()) {
-            return ResponseEntity.ok(facultyService.findFacultiesByColorIgnoreCase(color));
-        }
-        if (id != null && id > 0) {
-            return ResponseEntity.ok(facultyService.getFacultyById(id));
-        }
-        return ResponseEntity.ok(facultyService.getAllFaculty());
-    }
+//    @GetMapping   // GET http://localhost:8080/faculty
+//    public ResponseEntity getFaculty(@RequestParam(required = false) String name,
+//                                        @RequestParam(required = false) String color,
+//                                        @RequestParam(required = false) Long id) {
+//        if (name != null && !name.isBlank()) {
+//            return ResponseEntity.ok(facultyService.findFacultiesByNameIgnoreCase(name));
+//        }
+//        if (color != null && !color.isBlank()) {
+//            return ResponseEntity.ok(facultyService.findFacultiesByColorIgnoreCase(color));
+//        }
+//        if (id != null && id > 0) {
+//            return ResponseEntity.ok(facultyService.getFacultyById(id));
+//        }
+//        return ResponseEntity.ok(facultyService.getAllFaculty());
+//    }
 
     @GetMapping("{facultyIdForReturnStudents}")
     public ResponseEntity getFacultyByIdForReturnStudents(@PathVariable Long facultyIdForReturnStudents) {
@@ -66,4 +66,20 @@ public class FacultyController {
         facultyService.deleteFaculty(facultyId);
         return ResponseEntity.ok().build();
     }
+
+
+
+
+
+// Из РАЗБОРА домашки
+    @GetMapping("/{id}")   // Из РАЗБОРА домашки
+    public Faculty getFaculty(@PathVariable Long id) {
+        Faculty faculty = facultyService.getFacultyById(id);
+        if (faculty == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return faculty;
+    }
+
+
 }

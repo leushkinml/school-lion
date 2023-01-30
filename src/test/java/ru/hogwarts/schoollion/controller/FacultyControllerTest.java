@@ -10,6 +10,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -24,10 +26,10 @@ import ru.hogwarts.schoollion.model.Faculty;
 import ru.hogwarts.schoollion.repository.FacultyRepository;
 import ru.hogwarts.schoollion.service.FacultyService;
 
-@WebMvcTest
+@WebMvcTest(FacultyController.class)
 class FacultyControllerTest {
 
-         @Autowired
+        @Autowired
         private MockMvc mockMvc;
 
         @MockBean
@@ -36,14 +38,17 @@ class FacultyControllerTest {
         @SpyBean
         private FacultyService facultyService;
 
+        @Autowired
+        private ObjectMapper objectMapper;
+
         @InjectMocks
         private FacultyController facultyController;
 
         @Test
-        public void testStudents() throws Exception {
+        public void testFaculty() throws Exception {
             final String name = "Ivanov Ivan";
             final String color = "green";
-            final long id = 1;
+            final Long id = 1L;
 
 
             JSONObject facultyObject = new JSONObject();
@@ -56,8 +61,9 @@ class FacultyControllerTest {
             faculty.setName(name);
             faculty.setColor(color);
 
-            when(facultyRepository.save(any(Faculty.class))).thenReturn(faculty);
             when(facultyRepository.findById(eq(id))).thenReturn(Optional.of(faculty));
+
+            when(facultyRepository.save(any(Faculty.class))).thenReturn(faculty);
             when(facultyRepository.findFacultiesByColorIgnoreCase(eq(color))).thenReturn((List<Faculty>) Collections.singleton(faculty));
             //when(facultyRepository.findAllByColor(eq(color))).thenReturn(Collections.singleton(faculty));
 
@@ -82,12 +88,12 @@ class FacultyControllerTest {
                     .andExpect(jsonPath("$.color").value(color));
 
             mockMvc.perform(MockMvcRequestBuilders
-                            .get("/faculty/" + id)
+                            .get("/faculty/{id}" + id)
                             .accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$[0].id").value(id))
-                    .andExpect(jsonPath("$[0].name").value(name))
-                    .andExpect(jsonPath("$[0].color").value(color));
+                    .andExpect(jsonPath("$.id").value(id))
+                    .andExpect(jsonPath("$.name").value(name))
+                    .andExpect(jsonPath("$.color").value(color));
 
             mockMvc.perform(MockMvcRequestBuilders
                             .get("/faculty" + color)
