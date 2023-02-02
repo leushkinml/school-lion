@@ -57,9 +57,9 @@ public class Faculty {
         return students;
     }
 
-//    public void setStudents(Collection<Student> students) {
-//        this.students = students;
-//    }
+    public void setStudents(Collection<Student> students) {
+        this.students = students;
+    }
 
     @Override
     public boolean equals(Object o) {

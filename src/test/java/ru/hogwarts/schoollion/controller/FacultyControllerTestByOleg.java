@@ -40,19 +40,11 @@ public class FacultyControllerTestByOleg {
     @Autowired
     private ObjectMapper objectMapper;
 
-//    @InjectMocks
-//    private FacultyController facultyController;
-
     @Test
     public void testFaculty() throws Exception {
         Long id = 1L;
         String name = "Hufflepuf";
         String color = "Yellow";
-
-//        JSONObject facultyObject = new JSONObject();   //  Лишнее
-//        facultyObject.put("id", id);
-//        facultyObject.put("name", name);
-//        facultyObject.put("color", color);
 
         Faculty faculty = new Faculty(id, name, color);
         faculty.setId(id);
@@ -94,7 +86,7 @@ public class FacultyControllerTestByOleg {
         when(facultyRepository.findByColor(color)).thenReturn(Set.of(faculty1, faculty2));
 
         mockMvc.perform(MockMvcRequestBuilders
-                .get("/faculty")
+                .get("/faculty/by-color")
                 .queryParam("color", color)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
@@ -128,7 +120,7 @@ public class FacultyControllerTestByOleg {
         when(facultyRepository.findByColorOrNameIgnoreCase(color1IgnoreCase, name2IgnoreCase)).thenReturn(Set.of(faculty1, faculty2));
 
         mockMvc.perform(MockMvcRequestBuilders
-                        .get("/faculty")
+                        .get("/faculty/by-color-or-name")
                         .queryParam("color", color1IgnoreCase)
                         .queryParam("name", name2IgnoreCase)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -215,7 +207,8 @@ public class FacultyControllerTestByOleg {
         faculty.setName(name);
         faculty.setColor(color);
 
-        when(facultyRepository.getById(id)).thenReturn(faculty);
+        when(facultyRepository.findById(eq(id))).thenReturn(Optional.of(faculty));
+        // when(facultyRepository.getById(id)).thenReturn(faculty); // - Такой вариант НЕ РАБОТАЕТ.
 
         mockMvc.perform(MockMvcRequestBuilders
                         .delete("/faculty/{id}", id)
