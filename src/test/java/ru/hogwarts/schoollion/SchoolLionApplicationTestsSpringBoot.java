@@ -15,6 +15,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
+import ru.hogwarts.schoollion.controller.StudentController;
 import ru.hogwarts.schoollion.model.Student;
 
 import java.net.URI;
@@ -29,22 +30,40 @@ public class SchoolLionApplicationTestsSpringBoot {
     private int port;
 
     @Autowired
+    private StudentController studentController;
+
+    @Autowired
     private TestRestTemplate restTemplate;
 
+
     @Test
-    public void testCreateStudent() {
-        Student student = givenStudentWith("studentName", 25);
-        ResponseEntity<Student> response = whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student);
-        thenStudentHasBeenCreated(response);
+    public void contextLoads() throws Exception {
+        Assertions
+                .assertThat(studentController).isNotNull();
     }
 
     @Test
+    public void getStudentByZurab() throws Exception {
+        Assertions
+                .assertThat(this.restTemplate.getForObject("http://localhost:" + port + "/student", String.class))
+                .isNotNull();
+    }
+
+    @Test
+    public void testCreateStudent() {
+        Student student = givenStudentWith("studentName", 25); // Этот метод работает
+        ResponseEntity<Student> response = whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student); // Этот метод работает
+        thenStudentHasBeenCreated(response); // Этот метод работает
+    }
+
+    // ?????????
+    @Test
     public void testGetStudentById() {
-        Student student = givenStudentWith("studentName", 25);
-        ResponseEntity<Student> createResponse = whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student);
-        thenStudentHasBeenCreated(createResponse);
+        Student student = givenStudentWith("studentName", 25); // Этот метод работает
+        ResponseEntity<Student> createResponse = whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student); // Этот метод работает
+        thenStudentHasBeenCreated(createResponse); // Этот метод работает
         Student createStudent = createResponse.getBody();
-        thenStudentWithIdHasBeenFound(createStudent.getId(), createStudent);
+        thenStudentWithIdHasBeenFound(createStudent.getId(), createStudent); // ?????????
     }
 
     @Test
@@ -105,6 +124,9 @@ public class SchoolLionApplicationTestsSpringBoot {
         thenStudentNotFound(createdStudent);
     }
 
+
+    // Вспомогательные методы:
+
     private void whenDeletingStudent(Student createdStudent) {
         restTemplate.delete(getUriBuilder().path("/{id}").buildAndExpand(createdStudent.getId()).toUri());
     }
@@ -116,30 +138,38 @@ public class SchoolLionApplicationTestsSpringBoot {
         Assertions.assertThat(emptyRs.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
+    // ???????????  // ПРОВЕРИЛ
     private void thenStudentWithIdHasBeenFound(Long studentId, Student student) {
+        //URI uri = getUriBuilder().cloneBuilder().path("/{id}").buildAndExpand(studentId).toUri();
         URI uri = getUriBuilder().path("/{id}").buildAndExpand(studentId).toUri();
         ResponseEntity<Student> response = restTemplate.getForEntity(uri, Student.class);
         Assertions.assertThat(response.getBody()).isEqualTo(student);
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
+
+    // Этот метод работает  // ПРОВЕРИЛ
     private ResponseEntity<Student> whenSendingCreateStudentRequest(URI uri, Student student) {
         return restTemplate.postForEntity(uri, student, Student.class);
     }
 
+    // Этот метод работает  // ПРОВЕРИЛ
     private void thenStudentHasBeenCreated(ResponseEntity<Student> response) {
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         Assertions.assertThat(response.getBody()).isNotNull();
         Assertions.assertThat(response.getBody().getId()).isNotNull();
     }
 
+    // Этот метод работает  // ПРОВЕРИЛ
     private Student givenStudentWith(String name, int age) {
         return new Student(name, age);
     }
 
+    // ПРОВЕРИЛ
     private void resetIds(Collection<Student> students) {
         students.forEach(it -> it.setId(null));
     }
 
+    // ПРОВЕРИЛ
     private UriComponentsBuilder getUriBuilder() {
         return UriComponentsBuilder.newInstance()
                 .scheme("http")

@@ -19,6 +19,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -26,36 +27,9 @@ import java.util.Set;
 public class StudentController {
 
     private final StudentService studentService;
-    private final AvatarService avatarService;
 
-    public StudentController(StudentService studentService, AvatarService avatarService) {
+    public StudentController(StudentService studentService) {
         this.studentService = studentService;
-        this.avatarService = avatarService;
-    }
-
-    @PostMapping
-    public Student createStudentByZurab(@RequestBody Student student) {
-        return studentService.createStudent(student);
-    }
-
-    @GetMapping   // GET http://localhost:8080/student
-    public ResponseEntity getStudentByZurab(@RequestParam(required = false) String name,
-                                     @RequestParam(required = false) Integer studentAge,
-                                     @RequestParam(required = false) Long studentId) {
-        if (name != null && !name.isBlank()) {
-            return ResponseEntity.ok(studentService.findStudentByNameIgnoreCase(name));
-        }
-        if (studentAge != null && studentAge > 0) {
-            return ResponseEntity.ok(studentService.findStudentByAge(studentAge));
-        }
-        if (studentId != null && studentId > 0) {
-            Student student = studentService.getStudentById(studentId);
-            if (student == null) {
-                return ResponseEntity.notFound().build();
-            }
-            return ResponseEntity.ok(student);
-        }
-        return ResponseEntity.ok(studentService.getAllStudent());
     }
 
     @GetMapping("{studentIdForReturnFaculty}")   // GET http://localhost:8080/student/{studentIdForReturnFaculty}
@@ -78,14 +52,66 @@ public class StudentController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
-    @PutMapping()
-    public ResponseEntity<Student> updateStudentByZurab(@RequestBody Student student) {
-        Student updateStudent = studentService.updateStudent(student);
-        if (updateStudent == null) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-        }
-        return ResponseEntity.ok(updateStudent);
+    // Работа с SQL запросами
+    @GetMapping("/count-all-student-in-school")
+    public Integer getCountAllStudentsInSchool() {
+        return studentService.getCountAllStudentsInSchool();
     }
+
+    @GetMapping("/avarage-age-of-all-student-in-school")
+    public Integer getAvarageAgeOfAllStudentsInSchool() {
+        return studentService.getAvarageAgeOfAllStudentsInSchool();
+    }
+
+    @GetMapping("/five-students-with-biggest-id-in-school")
+    public List<Student> getFiveStudentsWithBiggestIdInSchool() {
+        return studentService.getFiveStudentsWithBiggestIdInSchool();
+    }
+
+    @GetMapping("students-by-page")
+    public ResponseEntity<List<Student>> getAllStudentsByPage(@RequestParam("page") Integer pageNumber, @RequestParam("size") Integer pageSize) {
+        List<Student> students = studentService.getAllStudentsByPage(pageNumber, pageSize);
+        return ResponseEntity.ok(students);
+    }
+
+
+
+
+
+
+//    @PostMapping
+//    public Student createStudentByZurab(@RequestBody Student student) {
+//        return studentService.createStudent(student);
+//    }
+
+//    @GetMapping   // GET http://localhost:8080/student
+//    public ResponseEntity getStudentByZurab(@RequestParam(required = false) String name,
+//                                     @RequestParam(required = false) Integer studentAge,
+//                                     @RequestParam(required = false) Long studentId) {
+//        if (name != null && !name.isBlank()) {
+//            return ResponseEntity.ok(studentService.findStudentByNameIgnoreCase(name));
+//        }
+//        if (studentAge != null && studentAge > 0) {
+//            return ResponseEntity.ok(studentService.findStudentByAge(studentAge));
+//        }
+//        if (studentId != null && studentId > 0) {
+//            Student student = studentService.getStudentById(studentId);
+//            if (student == null) {
+//                return ResponseEntity.notFound().build();
+//            }
+//            return ResponseEntity.ok(student);
+//        }
+//        return ResponseEntity.ok(studentService.getAllStudent());
+//    }
+
+//    @PutMapping()
+//    public ResponseEntity<Student> updateStudentByZurab(@RequestBody Student student) {
+//        Student updateStudent = studentService.updateStudent(student);
+//        if (updateStudent == null) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+//        }
+//        return ResponseEntity.ok(updateStudent);
+//    }
 
     @DeleteMapping("{studentId}")
     public ResponseEntity<Student> deleteStudentByZurab(@PathVariable Long studentId) {
@@ -97,92 +123,52 @@ public class StudentController {
 
 
 
- // Работа с ФАЙЛАМИ
-
-    @PostMapping(value = "/{studentId}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)   // Работа с ФАЙЛАМИ
-    public ResponseEntity<String> uploadAvatar(@PathVariable Long studentId, @RequestParam MultipartFile avatar) throws IOException {
-        if (avatar.getSize() > 1024 * 300) {
-            return ResponseEntity.badRequest().body("File is too big");
-        }
-        avatarService.uploadAvatar(studentId, avatar);
-        return ResponseEntity.ok().build();
-    }
-
-    @GetMapping(value = "/{studentId}/avatar/previewAvatar")  // Работа с ФАЙЛАМИ
-    public ResponseEntity<byte[]> downloadAvatar(@PathVariable Long studentId) {
-        Avatar avatar = avatarService.findAvatar(studentId);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.parseMediaType(avatar.getMediaType()));
-        headers.setContentLength(avatar.getPreviewAvatar().length);
-
-        return ResponseEntity.status(HttpStatus.OK).headers(headers).body(avatar.getPreviewAvatar());
-    }
-
-    @GetMapping(value = "/{studentId}/avatar")  // Работа с ФАЙЛАМИ
-    public void downloadAvatar(@PathVariable Long studentId, HttpServletResponse response) throws IOException {
-        Avatar avatar = avatarService.findAvatar(studentId);
-
-        Path path = Path.of(avatar.getFilePath());
-
-        try (InputStream is = Files.newInputStream(path);
-             OutputStream os = response.getOutputStream()){
-            response.setStatus(200);
-            response.setContentType(avatar.getMediaType());
-            response.setContentLength(Math.toIntExact(avatar.getFileSize()));
-            is.transferTo(os);
-        }
-    }
-
-
-
 
 // Из РАЗБОРА домашки
 
-//    @PostMapping // Из РАЗБОРА домашки
-//    public ResponseEntity<Student> createStudent(@RequestBody Student student) {
-////        if (student.getId() != null) {
-////            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id must be empty!");
-////        }
-//        return ResponseEntity.status(HttpStatus.CREATED).body(studentService.createStudent(student)); // Из РАЗБОРА домашки
-//    }
-//
-////    @PostMapping
-////    public ResponseEntity<Student> addStudent(@RequestBody Student student) {
-//////        if (student.getId() != null) {
-//////            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id must be empty!");
-//////        }
-////        return ResponseEntity.status(HttpStatus.CREATED).body(studentService.createStudent(student));
-////    }
-//    @GetMapping("/{id}")   // Из РАЗБОРА домашки
-//    public Student getStudent(@PathVariable Long id) {
-//        Student student = studentService.getStudentById(id);
-//        if (student == null) {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-//        }
-//        return student;
-//    }
-//
-//    @GetMapping(params = {"age"})  // Из РАЗБОРА домашки
-//    public Set<Student> findStudentByAge(@RequestParam(required = false) Integer age) {
-//        return (Set<Student>) studentService.findStudentByAge(age);
-//    }
-//
-//    @GetMapping(params = {"minAge", "maxAge"})  // Из РАЗБОРА домашки
-//    public Set<Student> findByAgeBetween(
-//            @RequestParam(required = false) Integer minAge,
-//            @RequestParam(required = false) Integer maxAge) {
-//        return (Set<Student>) studentService.findStudentByAgeBetween(minAge, maxAge);
-//    }
-//
-//    @PutMapping
-//    public ResponseEntity<Student> updateStudent(@RequestBody Student student) {
-////        if (student.getId() != null) {
-////            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id must be empty!");
-////        }
-//        return ResponseEntity.ok(studentService.updateStudent(student));
-//    }
+    // ПРОВЕРИЛ
+    @PostMapping // Из РАЗБОРА домашки ПРОВЕРИЛ
+    public ResponseEntity<Student> addStudent(@RequestBody Student student) {
+        if (student.getId() != null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id must be empty!");
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(studentService.createStudent(student)); // Из РАЗБОРА домашки
+    }
 
+    // ПРОВЕРИЛ
+    @GetMapping("/{id}")   // Из РАЗБОРА домашки  ПРОВЕРИЛ
+    public Student getStudent(@PathVariable Long id) {
+        Student student = studentService.getStudentById(id);
+        if (student == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
+        return student;
+    }
+
+    // ПРОВЕРИЛ
+    @GetMapping(params = {"age"})  // Из РАЗБОРА домашки   ПРОВЕРИЛ
+    public List<Student> findStudentsByAge(@RequestParam(required = false) Integer age) {
+        return studentService.findStudentByAge(age);
+    }
+
+    // ПРОВЕРИЛ
+    @GetMapping(params = {"minAge", "maxAge"})  // Из РАЗБОРА домашки   ПРОВЕРИЛ
+    public List<Student> findByAgeBetween(
+            @RequestParam(required = false) Integer minAge,
+            @RequestParam(required = false) Integer maxAge) {
+        return studentService.findStudentByAgeBetween(minAge, maxAge);
+    }
+
+    // ПРОВЕРИЛ
+    @PutMapping   // Из РАЗБОРА домашки   ПРОВЕРИЛ
+    public ResponseEntity<Student> updateStudent(@RequestBody Student student) {
+        if (student.getId() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id must be specified!");
+        }
+        return ResponseEntity.ok(studentService.updateStudent(student));
+    }
+
+    // НЕ ПОНЯТНО, как удалять
     @DeleteMapping("/{id}")
     public ResponseEntity<Student> deleteStudent(@PathVariable Long id) {
         Student deleteStudent = studentService.deleteStudentandReturn(id);
