@@ -1,5 +1,7 @@
 package ru.hogwarts.schoollion.service;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.schoollion.model.Student;
 import ru.hogwarts.schoollion.repository.StudentRepository;
@@ -51,6 +53,22 @@ public class StudentService {
 
     public List<Student> findStudentByNameIgnoreCase(String name) {
         return studentRepository.findStudentByNameIgnoreCase(name);
+    }
+
+    public Integer getCountAllStudentsInSchool() {
+        return studentRepository.getCountAllStudentsInSchool();
+    }
+
+    public Integer getAvarageAgeOfAllStudentsInSchool() {
+        return studentRepository.getAvarageAgeOfAllStudentsInSchool();
+    }
+
+    public List<Student> getFiveStudentsWithBiggestIdInSchool() {
+        return studentRepository.getFiveStudentsWithBiggestIdInSchool();
+    }
+    public List<Student> getAllStudentsByPage(Integer pageNumber, Integer pageSize) {
+        PageRequest pageRequest = PageRequest.of(pageNumber - 1, pageSize);
+        return studentRepository.findAll(pageRequest).getContent();
     }
 }
 

@@ -19,6 +19,7 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -135,7 +136,27 @@ public class StudentController {
     }
 
 
+    // Работа с SQL запросами
+    @GetMapping("/count-all-student-in-school")
+    public Integer getCountAllStudentsInSchool() {
+        return studentService.getCountAllStudentsInSchool();
+    }
 
+    @GetMapping("/avarage-age-of-all-student-in-school")
+    public Integer getAvarageAgeOfAllStudentsInSchool() {
+        return studentService.getAvarageAgeOfAllStudentsInSchool();
+    }
+
+    @GetMapping("/five-students-with-biggest-id-in-school")
+    public List<Student> getFiveStudentsWithBiggestIdInSchool() {
+        return studentService.getFiveStudentsWithBiggestIdInSchool();
+    }
+
+    @GetMapping("students-by-page")
+    public ResponseEntity<List<Student>> getAllStudentsByPage(@RequestParam("page") Integer pageNumber, @RequestParam("size") Integer pageSize) {
+        List<Student> students = studentService.getAllStudentsByPage(pageNumber, pageSize);
+        return ResponseEntity.ok(students);
+    }
 
 // Из РАЗБОРА домашки
 

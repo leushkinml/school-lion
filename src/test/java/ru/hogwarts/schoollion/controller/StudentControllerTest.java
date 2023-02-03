@@ -1,9 +1,7 @@
 package ru.hogwarts.schoollion.controller;
 
-import org.mockito.ArgumentMatchers;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 
-import static java.util.Optional.of;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -17,7 +15,6 @@ import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
@@ -28,8 +25,6 @@ import ru.hogwarts.schoollion.repository.AvatarRepository;
 import ru.hogwarts.schoollion.repository.StudentRepository;
 import ru.hogwarts.schoollion.service.AvatarService;
 import ru.hogwarts.schoollion.service.StudentService;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 @WebMvcTest(StudentController.class)
 class StudentControllerTest {
