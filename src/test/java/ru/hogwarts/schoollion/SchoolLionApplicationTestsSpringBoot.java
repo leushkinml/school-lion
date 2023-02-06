@@ -83,6 +83,7 @@ public class SchoolLionApplicationTestsSpringBoot {
         thenStudenAreFoundByCriteria(queryParams, student25);
     }
 
+
     @Test
     public void testFindByAgeBetween() {
         Student student18 = givenStudentWith("studentName3", 18);
