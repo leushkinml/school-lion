@@ -121,3 +121,16 @@ CREATE TABLE users(
     username TEXT PRIMARY KEY,
     role TEXT REFERENCES roles (role)
 )
+
+
+
+DROP INDEX users_email_index;
+CREATE INDEX users_id_index ON users (id);
+CREATE INDEX users_email_index ON users (email);
+CREATE INDEX users_id_email_index ON users (id, email);
+
+
+SELECT * FROM table_name WHERE column_name LIKE 'substring';
+SELECT * FROM table_name WHERE column_name LIKE 'substring%'; - начинается с подстроки
+SELECT * FROM table_name WHERE column_name LIKE '%substring'; - заканчивается подстрокой
+
