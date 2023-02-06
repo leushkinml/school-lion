@@ -26,6 +26,7 @@ import java.util.Set;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class SchoolLionApplicationTestsSpringBoot {
 
+
     @LocalServerPort
     private int port;
 
