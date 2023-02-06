@@ -50,33 +50,6 @@ public class AvatarController {
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body(avatar.getPreviewAvatar());
     }
 
-//    @GetMapping("list-of-avatar-by-page")
-//    public ResponseEntity<List<Avatar>> getListOfAvatarsByPage(@RequestParam("page") Integer pageNumber,
-//                                                              @RequestParam("size") Integer pageSize)
-//            throws IOException {
-//        List<Avatar> avatars = avatarService.getAllAvatarsByPage(pageNumber, pageSize);
-//
-//        return ResponseEntity.ok(avatars);
-//     }
-
-
-//    @GetMapping(value = "/get-all-avatars")  // Работа с ФАЙЛАМИ
-//    public void downloadAllAvatars(@RequestParam("page") Integer pageNumber,
-//                                   @RequestParam("size") Integer pageSize,
-//                                   HttpServletResponse response) throws IOException {
-//        List<Avatar> avatars = avatarService.getAllAvatarsByPage(pageNumber, pageSize);
-//
-//        Path path = Path.of(avatars.getFilePath());
-//
-//        try (InputStream is = Files.newInputStream(path);
-//             OutputStream os = response.getOutputStream()){
-//            response.setStatus(200);
-//            response.setContentType(avatar.getMediaType());
-//            response.setContentLength(Math.toIntExact(avatar.getFileSize()));
-//            is.transferTo(os);
-//        }
-//    }
-
     @GetMapping(value = "/{studentId}/avatar")  // Работа с ФАЙЛАМИ
     public void downloadAvatar(@PathVariable Long studentId, HttpServletResponse response) throws IOException {
         Avatar avatar = avatarService.findAvatar(studentId);
