@@ -134,3 +134,18 @@ SELECT * FROM table_name WHERE column_name LIKE 'substring';
 SELECT * FROM table_name WHERE column_name LIKE 'substring%'; - начинается с подстроки
 SELECT * FROM table_name WHERE column_name LIKE '%substring'; - заканчивается подстрокой
 
+
+-- liquibase formatted sql
+
+-- changeset mleushkin:1
+CREATE TABLE users(
+                      id SERIAL,
+                      email TEXT
+)
+
+-- changeset mleushkin:2
+ALTER TABLE users
+    ADD COLUMN name TEXT;
+
+-- changeset mleushkin:3
+CREATE INDEX users_name_index ON users (name);
