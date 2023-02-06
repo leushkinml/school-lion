@@ -41,7 +41,6 @@ public class SchoolLionApplicationTestsSpringBoot {
         Assertions
                 .assertThat(studentController).isNotNull();
     }
-
     @Test
     public void getStudentByZurab() throws Exception {
         Assertions
