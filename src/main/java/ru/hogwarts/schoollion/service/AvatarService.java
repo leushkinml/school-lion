@@ -90,4 +90,9 @@ public class AvatarService {
     private String getExtension(String fileName) {
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
+
+
+
+
+
 }

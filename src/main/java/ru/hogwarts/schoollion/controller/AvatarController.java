@@ -1,11 +1,16 @@
 package ru.hogwarts.schoollion.controller;
 
+<<<<<<< HEAD
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+=======
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+>>>>>>> origin/HW1
 import ru.hogwarts.schoollion.model.Avatar;
 import ru.hogwarts.schoollion.model.Student;
 import ru.hogwarts.schoollion.service.AvatarService;
@@ -28,6 +33,7 @@ public class AvatarController {
         this.avatarService = avatarService;
     }
 
+<<<<<<< HEAD
     @PostMapping(value = "/{studentId}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)   // Работа с ФАЙЛАМИ
     public ResponseEntity<String> uploadAvatar(@PathVariable Long studentId, @RequestParam MultipartFile avatar) throws IOException {
         if (avatar.getSize() > 1024 * 300) {
@@ -47,6 +53,39 @@ public class AvatarController {
 
         return ResponseEntity.status(HttpStatus.OK).headers(headers).body(avatar.getPreviewAvatar());
     }
+=======
+
+
+    @GetMapping("list-of-avatar-by-page")
+   public ResponseEntity<List<Avatar>> getListOfAvatarsByPage(@RequestParam("page") Integer pageNumber,
+                                                              @RequestParam("size") Integer pageSize)
+            throws IOException {
+        List<Avatar> avatars = avatarService.getAllAvatarsByPage(pageNumber, pageSize);
+
+        return ResponseEntity.ok(avatars);
+     }
+
+
+    @GetMapping(value = "/get-all-avatars")  // Работа с ФАЙЛАМИ
+    public void downloadAllAvatars(@RequestParam("page") Integer pageNumber,
+                                   @RequestParam("size") Integer pageSize,
+                                   HttpServletResponse response) throws IOException {
+        List<Avatar> avatars = avatarService.getAllAvatarsByPage(pageNumber, pageSize);
+
+        Path path = Path.of(avatars.getFilePath());
+
+        try (InputStream is = Files.newInputStream(path);
+             OutputStream os = response.getOutputStream()){
+            response.setStatus(200);
+            response.setContentType(avatar.getMediaType());
+            response.setContentLength(Math.toIntExact(avatar.getFileSize()));
+            is.transferTo(os);
+        }
+    }
+
+
+
+>>>>>>> origin/HW1
     @GetMapping(value = "/{studentId}/avatar")  // Работа с ФАЙЛАМИ
     public void downloadAvatar(@PathVariable Long studentId, HttpServletResponse response) throws IOException {
         Avatar avatar = avatarService.findAvatar(studentId);
@@ -61,6 +100,7 @@ public class AvatarController {
             is.transferTo(os);
         }
     }
+<<<<<<< HEAD
     @GetMapping("list-of-avatar-by-page")
    public ResponseEntity<List<Avatar>> getListOfAvatarsByPage(@RequestParam("page") Integer pageNumber,
                                                               @RequestParam("size") Integer pageSize)
@@ -69,4 +109,6 @@ public class AvatarController {
 
         return ResponseEntity.ok(avatars);
      }
+=======
+>>>>>>> origin/HW1
 }
