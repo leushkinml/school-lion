@@ -3,7 +3,6 @@ package ru.hogwarts.schoollion.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -24,8 +23,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
-@WebMvcTest(controllers = FacultyController.class)
+@WebMvcTest(FacultyController.class)
 public class FacultyControllerTestByOleg {
 
     @Autowired
@@ -86,10 +84,10 @@ public class FacultyControllerTestByOleg {
         when(facultyRepository.findByColor(color)).thenReturn(Set.of(faculty1, faculty2));
 
         mockMvc.perform(MockMvcRequestBuilders
-                .get("/faculty/by-color")
-                .queryParam("color", color)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
+                        .get("/faculty/by-color")
+                        .queryParam("color", color)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(objectMapper.writeValueAsString(List.of(faculty1, faculty2))));
     }
@@ -148,10 +146,10 @@ public class FacultyControllerTestByOleg {
         when(facultyRepository.findById(id)).thenReturn(Optional.of(faculty));
 
         mockMvc.perform(MockMvcRequestBuilders
-                .post("/faculty")
-                .content(facultyObj.toString())
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
+                        .post("/faculty")
+                        .content(facultyObj.toString())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(id))
                 .andExpect(jsonPath("$.name").value(name))
@@ -208,7 +206,6 @@ public class FacultyControllerTestByOleg {
         faculty.setColor(color);
 
         when(facultyRepository.findById(eq(id))).thenReturn(Optional.of(faculty));
-        // when(facultyRepository.getById(id)).thenReturn(faculty); // - Такой вариант НЕ РАБОТАЕТ.
 
         mockMvc.perform(MockMvcRequestBuilders
                         .delete("/faculty/{id}", id)
@@ -221,5 +218,4 @@ public class FacultyControllerTestByOleg {
 
         verify(facultyRepository, atLeastOnce()).deleteById(id);
     }
-
 }

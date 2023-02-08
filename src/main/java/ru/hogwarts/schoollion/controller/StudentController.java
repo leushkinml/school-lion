@@ -1,26 +1,14 @@
 package ru.hogwarts.schoollion.controller;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-import ru.hogwarts.schoollion.model.Avatar;
 import ru.hogwarts.schoollion.model.Student;
-import ru.hogwarts.schoollion.service.AvatarService;
 import ru.hogwarts.schoollion.service.StudentService;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("student")
@@ -32,7 +20,7 @@ public class StudentController {
         this.studentService = studentService;
     }
 
-    @GetMapping("{studentIdForReturnFaculty}")   // GET http://localhost:8080/student/{studentIdForReturnFaculty}
+    @GetMapping("/return-faculty-by-student-id/{studentIdForReturnFaculty}")   // GET http://localhost:8080/student/{studentIdForReturnFaculty}
     public ResponseEntity getStudentByIdAndReturnFacultybyLion(@PathVariable Long studentIdForReturnFaculty) {
         if (studentIdForReturnFaculty != null && studentIdForReturnFaculty > 0) {
             Student student = studentService.getStudentById(studentIdForReturnFaculty);
@@ -45,14 +33,14 @@ public class StudentController {
     }
 
     @GetMapping("/age/{minAge}&{maxAge}")   // GET http://localhost:8080/student/age/{minAge}&{maxAge}
-    public ResponseEntity<Collection<Student>> findStudentByAgeBetweenbyLion(@PathVariable Integer minAge, @PathVariable Integer maxAge) {
+    public ResponseEntity<Collection<Student>> findStudentByAgeBetweenByLion(@PathVariable Integer minAge, @PathVariable Integer maxAge) {
         if (minAge != null && minAge > 0 && maxAge != null && maxAge > 0) {
             return ResponseEntity.ok(studentService.findStudentByAgeBetween(minAge, maxAge));
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
-// Работа с SQL запросами
+    // Работа с SQL запросами
     @GetMapping("/count-all-student-in-school")
     public Integer getCountAllStudentsInSchool() {
         return studentService.getCountAllStudentsInSchool();
@@ -87,7 +75,7 @@ public class StudentController {
     }
 
     // ПРОВЕРИЛ
-    @GetMapping("/{id}")   // Из РАЗБОРА домашки  ПРОВЕРИЛ
+    @GetMapping("/get-student-by-id/{id}")   // Из РАЗБОРА домашки  ПРОВЕРИЛ
     public Student getStudent(@PathVariable Long id) {
         Student student = studentService.getStudentById(id);
         if (student == null) {
@@ -97,7 +85,8 @@ public class StudentController {
     }
 
     // ПРОВЕРИЛ
-    @GetMapping(params = {"age"})  // Из РАЗБОРА домашки   ПРОВЕРИЛ
+    //@GetMapping(params = {"/get-student-by-age/{age}"})  // Из РАЗБОРА домашки   ПРОВЕРИЛ
+    @GetMapping("/get-student-by-age/{age}")  // Из РАЗБОРА домашки   ПРОВЕРИЛ
     public List<Student> findStudentsByAge(@RequestParam(required = false) Integer age) {
         return studentService.findStudentByAge(age);
     }
@@ -130,11 +119,11 @@ public class StudentController {
         }
     }
 
-    @DeleteMapping("{studentId}")
-    public ResponseEntity<Student> deleteStudentByZurab(@PathVariable Long studentId) {
-        studentService.deleteStudent(studentId);
-        return ResponseEntity.ok().build();
-    }
+//    @DeleteMapping("{studentId}")
+//    public ResponseEntity<Student> deleteStudentByZurab(@PathVariable Long studentId) {
+//        studentService.deleteStudent(studentId);
+//        return ResponseEntity.ok().build();
+//    }
 
 
 //    @PostMapping

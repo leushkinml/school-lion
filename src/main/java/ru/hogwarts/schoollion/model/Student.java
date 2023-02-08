@@ -20,10 +20,14 @@ public class Student {
     private Faculty faculty;
 
     public Student(Long id, String name, Integer age) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
     }
 
     public Student(String name, Integer age) {
-
+        this.name = name;
+        this.age = age;
     }
 
     public Student() {

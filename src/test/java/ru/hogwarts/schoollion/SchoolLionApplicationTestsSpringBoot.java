@@ -26,7 +26,6 @@ import java.util.Set;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class SchoolLionApplicationTestsSpringBoot {
 
-
     @LocalServerPort
     private int port;
 
@@ -36,12 +35,12 @@ public class SchoolLionApplicationTestsSpringBoot {
     @Autowired
     private TestRestTemplate restTemplate;
 
-
     @Test
     public void contextLoads() throws Exception {
         Assertions
                 .assertThat(studentController).isNotNull();
     }
+
     @Test
     public void getStudentByZurab() throws Exception {
         Assertions
@@ -59,9 +58,11 @@ public class SchoolLionApplicationTestsSpringBoot {
     // ?????????
     @Test
     public void testGetStudentById() {
-        Student student = givenStudentWith("studentName", 25); // Этот метод работает
-        ResponseEntity<Student> createResponse = whenSendingCreateStudentRequest(getUriBuilder().build().toUri(), student); // Этот метод работает
-        thenStudentHasBeenCreated(createResponse); // Этот метод работает
+        Student student = givenStudentWith("studentName", 25);
+        ResponseEntity<Student> createResponse =
+                whenSendingCreateStudentRequest
+                        (getUriBuilder().build().toUri(), student);
+        thenStudentHasBeenCreated(createResponse);
         Student createStudent = createResponse.getBody();
         thenStudentWithIdHasBeenFound(createStudent.getId(), createStudent); // ?????????
     }
@@ -141,8 +142,8 @@ public class SchoolLionApplicationTestsSpringBoot {
 
     // ???????????  // ПРОВЕРИЛ
     private void thenStudentWithIdHasBeenFound(Long studentId, Student student) {
-        //URI uri = getUriBuilder().cloneBuilder().path("/{id}").buildAndExpand(studentId).toUri();
-        URI uri = getUriBuilder().path("/{id}").buildAndExpand(studentId).toUri();
+        URI uri = getUriBuilder().cloneBuilder().path("/{id}").buildAndExpand(studentId).toUri();
+        //URI uri = getUriBuilder().path("/{id}").buildAndExpand(studentId).toUri();
         ResponseEntity<Student> response = restTemplate.getForEntity(uri, Student.class);
         Assertions.assertThat(response.getBody()).isEqualTo(student);
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);

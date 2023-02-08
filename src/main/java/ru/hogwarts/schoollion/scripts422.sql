@@ -1,16 +1,16 @@
 CREATE TABLE car (
-    car_id SERIAL,
-    car_brand TEXT DEFAULT 'No name brand',
-    car_model TEXT PRIMARY KEY,
-    car_price NUMERIC(9,2) CHECK ( car_price > 0 ),
+    id SERIAL PRIMARY KEY,
+    brand TEXT DEFAULT 'No name brand',
+    model TEXT NOT NULL,
+    price NUMERIC(9,2) CHECK ( price > 0 ),
 );
 
 CREATE TABLE driver (
-    driver_id SERIAL,
-    driver_name TEXT PRIMARY KEY,
-    driver_age INTEGER CHECK ( age > 0 ),
-    driver_license_verified BOOLEAN,
-    car_model TEXT
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    age INTEGER CHECK ( age > 0 ),
+    license_verified BOOLEAN,
+    car_id TEXT REFERENCES car(id)
 );
 
 SELECT student.name, student.age, faculty.name
