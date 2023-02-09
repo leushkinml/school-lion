@@ -23,7 +23,8 @@ public class StudentService {
     }
 
     public Student getStudentById(Long studentId) {
-        return studentRepository.findById(studentId).get();
+
+        return studentRepository.findById(studentId).orElse(null);
     }
 
     public List<Student> findStudentByAge(int age) {

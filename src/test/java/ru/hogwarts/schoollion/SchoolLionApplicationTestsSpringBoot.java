@@ -20,6 +20,7 @@ import ru.hogwarts.schoollion.model.Student;
 
 import java.net.URI;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -81,7 +82,7 @@ public class SchoolLionApplicationTestsSpringBoot {
 
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("age", "25");
-        thenStudenAreFoundByCriteria(queryParams, student25);
+        thenStudentAreFoundByCriteria("/get-student-by-age", queryParams, student25);
     }
 
 
@@ -100,7 +101,7 @@ public class SchoolLionApplicationTestsSpringBoot {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("minAge", "20");
         queryParams.add("maxAge", "30");
-        thenStudenAreFoundByCriteria(queryParams, student25, student28);
+        thenStudentAreFoundByCriteria("", queryParams, student25, student28);
     }
 
     @Test
@@ -134,7 +135,7 @@ public class SchoolLionApplicationTestsSpringBoot {
     }
 
     private void thenStudentNotFound(Student createdStudent) {
-        URI getUri = getUriBuilder().path("/{id}").buildAndExpand(createdStudent.getId()).toUri();
+        URI getUri = getUriBuilder().path("/get-student-by-id/{id}").buildAndExpand(createdStudent.getId()).toUri();
         ResponseEntity<Student> emptyRs = restTemplate.getForEntity(getUri, Student.class);
 
         Assertions.assertThat(emptyRs.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -142,7 +143,7 @@ public class SchoolLionApplicationTestsSpringBoot {
 
     // ???????????  // ПРОВЕРИЛ
     private void thenStudentWithIdHasBeenFound(Long studentId, Student student) {
-        URI uri = getUriBuilder().cloneBuilder().path("/{id}").buildAndExpand(studentId).toUri();
+        URI uri = getUriBuilder().cloneBuilder().path("/get-student-by-id/{id}").buildAndExpand(studentId).toUri();
         //URI uri = getUriBuilder().path("/{id}").buildAndExpand(studentId).toUri();
         ResponseEntity<Student> response = restTemplate.getForEntity(uri, Student.class);
         Assertions.assertThat(response.getBody()).isEqualTo(student);
@@ -187,26 +188,28 @@ public class SchoolLionApplicationTestsSpringBoot {
         restTemplate.put(getUriBuilder().build().toUri(), createStudent);
     }
 
-    private void thenStudenAreFoundByCriteria(MultiValueMap<String, String> queryParams, Student... students) {
-        URI uri = getUriBuilder().queryParams(queryParams).build().toUri();
+    private void thenStudentAreFoundByCriteria(String path,
+                                               MultiValueMap<String, String> queryParams,
+                                               Student... students) {
+        URI uri = getUriBuilder().path(path).queryParams(queryParams).build().toUri();
 
-        ResponseEntity<Set<Student>> response = restTemplate.exchange(
+        ResponseEntity<List<Student>> response = restTemplate.exchange(
                 uri,
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<Set<Student>>() {
+                new ParameterizedTypeReference<>() {
                 });
 
         Assertions.assertThat(response.getBody()).isNotNull();
         Assertions.assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
 
-        Set<Student> actualResult = response.getBody();
+        List<Student> actualResult = response.getBody();
         resetIds(actualResult);
         Assertions.assertThat(actualResult).containsExactlyInAnyOrder(students);
     }
 
     private void thenStudentHasBeenUpdated(Student createdStudent, int newAge, String newName) {
-        URI getUri = getUriBuilder().path("/{id}").buildAndExpand(createdStudent.getId()).toUri();
+        URI getUri = getUriBuilder().path("/get-student-by-id/{id}").buildAndExpand(createdStudent.getId()).toUri();
         ResponseEntity<Student> updatedStudentRs = restTemplate.getForEntity(getUri, Student.class);
 
         Assertions.assertThat(updatedStudentRs.getStatusCode()).isEqualTo(HttpStatus.OK);

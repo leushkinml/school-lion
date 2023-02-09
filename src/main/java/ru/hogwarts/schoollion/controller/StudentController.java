@@ -76,7 +76,7 @@ public class StudentController {
 
     // ПРОВЕРИЛ
     @GetMapping("/get-student-by-id/{id}")   // Из РАЗБОРА домашки  ПРОВЕРИЛ
-    public Student getStudent(@PathVariable Long id) {
+    public Student getStudentById(@PathVariable Long id) {
         Student student = studentService.getStudentById(id);
         if (student == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -86,7 +86,7 @@ public class StudentController {
 
     // ПРОВЕРИЛ
     //@GetMapping(params = {"/get-student-by-age/{age}"})  // Из РАЗБОРА домашки   ПРОВЕРИЛ
-    @GetMapping("/get-student-by-age/{age}")  // Из РАЗБОРА домашки   ПРОВЕРИЛ
+    @GetMapping("/get-student-by-age")  // Из РАЗБОРА домашки   ПРОВЕРИЛ
     public List<Student> findStudentsByAge(@RequestParam(required = false) Integer age) {
         return studentService.findStudentByAge(age);
     }
