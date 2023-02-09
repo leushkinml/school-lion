@@ -28,6 +28,7 @@ public class AvatarService {
 
     Logger logger = LoggerFactory.getLogger(AvatarService.class);
 
+
     @Value("${students.avatar.dir.path}")
     private String avatarsDir;
 
