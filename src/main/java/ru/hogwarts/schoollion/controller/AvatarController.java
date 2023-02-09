@@ -1,15 +1,14 @@
 package ru.hogwarts.schoollion.controller;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 import ru.hogwarts.schoollion.model.Avatar;
-import ru.hogwarts.schoollion.model.Student;
 import ru.hogwarts.schoollion.service.AvatarService;
 
 import javax.servlet.http.HttpServletResponse;
@@ -29,6 +28,7 @@ public class AvatarController {
     public AvatarController(AvatarService avatarService) {
         this.avatarService = avatarService;
     }
+
 
     @PostMapping(value = "/{studentId}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)   // Работа с ФАЙЛАМИ
     public ResponseEntity<String> uploadAvatar(@PathVariable Long studentId, @RequestParam MultipartFile avatar) throws IOException {

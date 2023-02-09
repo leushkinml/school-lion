@@ -5,6 +5,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,12 +31,12 @@ public class AvatarService {
 
     Logger logger = LoggerFactory.getLogger(AvatarService.class);
 
-
     @Value("${students.avatar.dir.path}")
     private String avatarsDir;
 
     private final StudentService studentService;
     private final AvatarRepository avatarRepository;
+
 
     public AvatarService(StudentService studentService, AvatarRepository avatarRepository) {
         this.studentService = studentService;
@@ -101,9 +104,4 @@ public class AvatarService {
         logger.debug("Called method: private String getExtension(String fileName) ");
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
-
-
-
-
-
 }
