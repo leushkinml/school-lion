@@ -1,5 +1,7 @@
 package ru.hogwarts.schoollion.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.schoollion.model.Faculty;
 import ru.hogwarts.schoollion.repository.FacultyRepository;
@@ -10,6 +12,8 @@ import java.util.Set;
 
 @Service
 public class FacultyService {
+
+    Logger logger = LoggerFactory.getLogger(FacultyService.class);
 
     private final FacultyRepository facultyRepository;
 

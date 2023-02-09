@@ -1,5 +1,7 @@
 package ru.hogwarts.schoollion.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +26,8 @@ import static java.nio.file.StandardOpenOption.CREATE_NEW;
 @Transactional
 public class AvatarService {
 
+    Logger logger = LoggerFactory.getLogger(AvatarService.class);
+
     @Value("${students.avatar.dir.path}")
     private String avatarsDir;
 
@@ -36,6 +40,7 @@ public class AvatarService {
     }
 
     public void uploadAvatar(Long studentId, MultipartFile file) throws IOException {
+        logger.debug("Called method: public void uploadAvatar(Long studentId, MultipartFile file) ");
         Student student = studentService.getStudentById(studentId);
 
         Path filePath = Path.of(avatarsDir, studentId + "." + getExtension(file.getOriginalFilename()));
@@ -57,20 +62,24 @@ public class AvatarService {
         avatar.setMediaType(file.getContentType());
         avatar.setPreviewAvatar(generateAvatarPreview(filePath));
 
+        logger.debug("Uploaded avatar: {}", avatar);
         avatarRepository.save(avatar);
     }
 
     public Avatar findAvatar(Long studentId) {
+        logger.debug("Called method: public Avatar findAvatar(Long studentId) ");
         return avatarRepository.findByStudentId(studentId).orElse(new Avatar());
     }
 
 
     public List<Avatar> getAllAvatarsByPage(Integer pageNumber, Integer pageSize) {
+        logger.debug("Called method: public List<Avatar> getAllAvatarsByPage(Integer pageNumber, Integer pageSize) ");
         PageRequest pageRequest = PageRequest.of(pageNumber - 1, pageSize);
         return avatarRepository.findAll(pageRequest).getContent();
     }
 
     private byte[] generateAvatarPreview(Path filePath) throws IOException {
+        logger.debug("Called method: private byte[] generateAvatarPreview(Path filePath)");
         try (InputStream is = Files.newInputStream(filePath);
              BufferedInputStream bis = new BufferedInputStream(is, 1024);
              ByteArrayOutputStream baos = new ByteArrayOutputStream()){
@@ -88,6 +97,7 @@ public class AvatarService {
 
     }
     private String getExtension(String fileName) {
+        logger.debug("Called method: private String getExtension(String fileName) ");
         return fileName.substring(fileName.lastIndexOf(".") + 1);
     }
 
