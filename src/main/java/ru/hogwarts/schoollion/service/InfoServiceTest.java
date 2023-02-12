@@ -13,10 +13,18 @@ public class InfoServiceTest implements InfoService{
 
     Logger logger = LoggerFactory.getLogger(InfoServiceTest.class);
 
-    private String portForTest;
+    private Integer portForTest;
+
     @Override
-    public String getPortInString() throws UnknownHostException {
-        logger.debug("Called method: public String getPortInString() ");
-        return portForTest = "999.999.9.999 TEST";
+    public Integer getPort() {
+        logger.debug("Called method: public Integer getPort() ");
+        return portForTest = 9999;
     }
+
+//    private String portForTest;
+//    @Override
+//    public String getPortInString() throws UnknownHostException {
+//        logger.debug("Called method: public String getPortInString() ");
+//        return portForTest = "999.999.9.999 TEST";
+//    }
 }

@@ -18,7 +18,7 @@ public class InfoController {
     }
 
     @GetMapping("/get-port")
-    public String getPort() throws UnknownHostException {
-        return "This port is currently enabled: " + infoService.getPortInString();
+    public String getPort() {
+        return "This port is currently enabled: " + infoService.getPort();
     }
 }
