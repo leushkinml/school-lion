@@ -8,8 +8,10 @@ import org.springframework.stereotype.Service;
 import ru.hogwarts.schoollion.model.Student;
 import ru.hogwarts.schoollion.repository.StudentRepository;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
@@ -86,5 +88,40 @@ public class StudentService {
         PageRequest pageRequest = PageRequest.of(pageNumber - 1, pageSize);
         return studentRepository.findAll(pageRequest).getContent();
     }
+    // Работа со Stream API
+    public List<String> getStudentsWithNameStartWith(String letter) {
+
+        List<Student> students = new ArrayList<>(studentRepository.findAll());
+        List<String> studentsSorted = new ArrayList<>();
+        studentsSorted = students.stream()
+                .map(u -> u.getName())
+                .filter(s -> s.startsWith(letter))
+                .map(String::toUpperCase)
+                .sorted()
+                .collect(Collectors.toList());
+
+        return studentsSorted;
+    }
+
+    public List<String> getStudentsWithNameStartWithA() {
+
+        List<Student> students = new ArrayList<>(studentRepository.findAll());
+        List<String> studentsSorted = students.stream()
+                .map(u -> u.getName())
+                .filter(s -> s.startsWith("A"))
+                .map(String::toUpperCase)
+                .sorted()
+                .collect(Collectors.toList());
+
+        return studentsSorted;
+    }
+
+    public Double studentsAverageAge() {
+        List<Student> students = new ArrayList<>(studentRepository.findAll());
+        Double studentsAverageAge = students.stream().
+                mapToInt(Student::getAge).average().getAsDouble();
+        return studentsAverageAge;
+    }
+
 }
 

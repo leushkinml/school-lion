@@ -62,20 +62,15 @@ public class StudentController {
         return ResponseEntity.ok(students);
     }
 
-
-// Из РАЗБОРА домашки
-
-    // ПРОВЕРИЛ
-    @PostMapping // Из РАЗБОРА домашки ПРОВЕРИЛ
+    @PostMapping
     public ResponseEntity<Student> addStudent(@RequestBody Student student) {
         if (student.getId() != null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id must be empty!");
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(studentService.createStudent(student)); // Из РАЗБОРА домашки
+        return ResponseEntity.status(HttpStatus.CREATED).body(studentService.createStudent(student));
     }
 
-    // ПРОВЕРИЛ
-    @GetMapping("/get-student-by-id/{id}")   // Из РАЗБОРА домашки  ПРОВЕРИЛ
+    @GetMapping("/get-student-by-id/{id}")
     public Student getStudentById(@PathVariable Long id) {
         Student student = studentService.getStudentById(id);
         if (student == null) {
@@ -84,23 +79,19 @@ public class StudentController {
         return student;
     }
 
-    // ПРОВЕРИЛ
-    //@GetMapping(params = {"/get-student-by-age/{age}"})  // Из РАЗБОРА домашки   ПРОВЕРИЛ
-    @GetMapping("/get-student-by-age")  // Из РАЗБОРА домашки   ПРОВЕРИЛ
+    @GetMapping("/get-student-by-age")
     public List<Student> findStudentsByAge(@RequestParam(required = false) Integer age) {
         return studentService.findStudentByAge(age);
     }
 
-    // ПРОВЕРИЛ
-    @GetMapping(params = {"minAge", "maxAge"})  // Из РАЗБОРА домашки   ПРОВЕРИЛ
+    @GetMapping(params = {"minAge", "maxAge"})
     public List<Student> findByAgeBetween(
             @RequestParam(required = false) Integer minAge,
             @RequestParam(required = false) Integer maxAge) {
         return studentService.findStudentByAgeBetween(minAge, maxAge);
     }
 
-    // ПРОВЕРИЛ
-    @PutMapping   // Из РАЗБОРА домашки   ПРОВЕРИЛ
+    @PutMapping
     public ResponseEntity<Student> updateStudent(@RequestBody Student student) {
         if (student.getId() == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Id must be specified!");
@@ -108,7 +99,7 @@ public class StudentController {
         return ResponseEntity.ok(studentService.updateStudent(student));
     }
 
-    // НЕ ПОНЯТНО, как удалять
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Student> deleteStudent(@PathVariable Long id) {
         Student deleteStudent = studentService.deleteStudentandReturn(id);
@@ -118,6 +109,26 @@ public class StudentController {
             return ResponseEntity.ok(deleteStudent);
         }
     }
+
+    // Работа со Stream API
+    @GetMapping("/students-with-name-start-with/{letter}")
+    public ResponseEntity<List<String>> getStudentsWithNameStartWith(@PathVariable("letter") String letter) {
+        List<String> students = studentService.getStudentsWithNameStartWith(letter);
+        return ResponseEntity.ok(students);
+    }
+
+    @GetMapping("/students-with-name-start-A")
+    public ResponseEntity<List<String>> getStudentsWithNameStartWithA() {
+        List<String> students = studentService.getStudentsWithNameStartWithA();
+        return ResponseEntity.ok(students);
+    }
+
+    @GetMapping("/students-average-age")
+    public ResponseEntity<Double> studentsAverageAge() {
+        Double averageAge = studentService.studentsAverageAge();
+        return ResponseEntity.ok(averageAge);
+    }
+
 
 //    @DeleteMapping("{studentId}")
 //    public ResponseEntity<Student> deleteStudentByZurab(@PathVariable Long studentId) {
