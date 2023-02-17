@@ -99,7 +99,6 @@ public class StudentController {
         return ResponseEntity.ok(studentService.updateStudent(student));
     }
 
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Student> deleteStudent(@PathVariable Long id) {
         Student deleteStudent = studentService.deleteStudentandReturn(id);
@@ -128,6 +127,17 @@ public class StudentController {
         Double averageAge = studentService.studentsAverageAge();
         return ResponseEntity.ok(averageAge);
     }
+}
+
+
+
+
+
+
+
+
+
+
 
 
 //    @DeleteMapping("{studentId}")
@@ -170,4 +180,3 @@ public class StudentController {
 //        }
 //        return ResponseEntity.ok(updateStudent);
 //    }
-}

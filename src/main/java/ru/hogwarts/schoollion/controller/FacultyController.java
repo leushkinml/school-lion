@@ -5,7 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import ru.hogwarts.schoollion.model.Faculty;
 import ru.hogwarts.schoollion.service.FacultyService;
-import java.util.Set;
+
+import java.util.*;
 
 @RestController
 @RequestMapping("faculty")
@@ -29,8 +30,8 @@ public class FacultyController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
-    // Из РАЗБОРА домашки
-    @GetMapping("{id}") // Может нужно удалить слэш?  // Из РАЗБОРА домашки
+
+    @GetMapping("{id}")
     public Faculty getFaculty(@PathVariable Long id) {
         Faculty faculty = facultyService.getFacultyById(id);
         if (faculty == null) {
@@ -79,9 +80,53 @@ public class FacultyController {
         }
     }
 
-    // Мой ПЕРВИЧНЫЙ код
+    // Работа со Stream API
+    @GetMapping("/faculty-with-longest-name")
+    public ResponseEntity<Optional<String>> getFacultyWithLongestName() {
+        Optional<String> faculty = facultyService.getFacultyWithLongestName();
+        return ResponseEntity.ok(faculty);
+    }
+
+    // Измерение скорости Stream API
+    @GetMapping("/test-max-speed")
+    public ResponseEntity<String> testMaxSpeed() throws InterruptedException {
+        String  maxSpeed = facultyService.testMaxSpeed();
+        return ResponseEntity.ok(maxSpeed);
+    }
+//    @GetMapping("/test-max-speed-2")
+//    public ResponseEntity<Integer> getMaxSpeedTwo() {
+//        Integer maxSpeed = facultyService.getMaxSpeedTwo();
+//        return ResponseEntity.ok(maxSpeed);
+//    }
+//    @GetMapping("/test-max-speed-3")
+//    public ResponseEntity<Integer> getMaxSpeedThree() {
+//        Integer maxSpeed = facultyService.getMaxSpeedThree();
+//        return ResponseEntity.ok(maxSpeed);
+//    }
+
+}
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Мой ПЕРВИЧНЫЙ код
 //    @PostMapping
 //    public Faculty createFaculty(@RequestBody Faculty faculty) {
 //        return facultyService.createFaculty(faculty);
@@ -118,6 +163,3 @@ public class FacultyController {
 //        facultyService.deleteFaculty(facultyId);
 //        return ResponseEntity.ok().build();
 //    }
-
-
-}
