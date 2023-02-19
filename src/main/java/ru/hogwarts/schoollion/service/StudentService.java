@@ -19,6 +19,8 @@ public class StudentService {
 
     private final StudentRepository studentRepository;
 
+    public final Object flag = new Object();
+
     public StudentService(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
     }
@@ -125,5 +127,131 @@ public class StudentService {
                 mapToInt(Student::getAge).average().getAsDouble();
         return studentsAverageAge;
     }
+
+// Работа с Потоками и Синхронизация
+    public void printStudentsLion() {
+
+        System.out.println("Несинхронизированный вывод");
+
+        printStudents(0);
+        printStudents(1);
+
+        Thread thread1 = new Thread(() -> {
+            printStudents(2);
+                if (Thread.currentThread().isInterrupted()) {
+                    throw new RuntimeException();
+                }
+            printStudents(3);
+        });
+        thread1.start();
+
+        Thread thread2 = new Thread(() -> {
+            if (!Thread.currentThread().isInterrupted()) {
+                printStudents(4);
+            }
+            printStudents(5);
+        });
+        thread2.start();
+    }
+    public Integer count = 1;     // Для вывода потоков
+    public void printStudents(int number) {
+
+        List<Student> students = studentRepository.findAll();
+        System.out.println("Студент и номер в списке: " + students.get(number).getName() + ". Порядок вывода: " + count);
+        count++;
+    }
+
+    public void printStudentsLionSync() {
+
+        System.out.println("Синхронизированный вывод");
+
+        printStudentsSync(0);
+        printStudentsSync(1);
+
+        Thread thread1 = new Thread(() -> {
+            printStudentsSync(2);
+            if (Thread.currentThread().isInterrupted()) {
+                throw new RuntimeException();
+            }
+            printStudentsSync(3);
+        });
+        thread1.start();
+
+        Thread thread2 = new Thread(() -> {
+            if (!Thread.currentThread().isInterrupted()) {
+                printStudentsSync(4);
+            }
+            printStudentsSync(5);
+        });
+        thread2.start();
+    }
+    public Integer countSync = 1;     // Для вывода потоков
+    public void printStudentsSync(int number) {
+
+        List<Student> students = studentRepository.findAll();
+        synchronized (flag) {
+            System.out.println("Студент и номер в списке: " + students.get(number).getName() + ". Порядок вывода: " + countSync);
+            countSync++;
+        }
+    }
+
+
+
+
+
+
+
+//    public void printStudents() {
+//        List<Student> students = studentRepository.findAll(PageRequest.of(0,6)).getContent();
+//
+//        printStudents(students.subList(0, 2));
+//        new Thread(() -> printStudents(students)).start();
+//        new Thread(() -> printStudents(students)).start();
+//    }
+//    private void printStudents(List<Student> students) {
+//        LOG.info(students.get(index % students.size()).getName());
+//        index++;
+//    }
+
+
+
+//    public void printStudents() {
+//        List<Student> students = studentRepository.findAll(PageRequest.of(0,6)).getContent();
+//
+//        printStudents(students.subList(0, 2));
+//        new Thread(() -> printStudents(students.subList(2,4))).start();
+//        new Thread(() -> printStudents(students.subList(4,6))).start();
+//    }
+
+
+
+
+//    private synchronized void printStudentsSync(List<Student> students) {
+//            LOG.info(students.get(index % students.size()).getName());
+//            index++;
+//    }
+
+//    private synchronized void printStudentsSync(List<Student> students) {
+//        for (Student student : students) {
+////            LOG.info(student.getName());
+//            System.out.println(student.getName());
+//        }
+//    }
+//    public void printStudentsSync() {
+//        List<Student> students = studentRepository.findAll(PageRequest.of(0,6)).getContent();
+//
+//        printStudents(students.subList(0, 2));
+//        new Thread(() -> printStudents(students)).start();
+//        new Thread(() -> printStudents(students)).start();
+//    }
+
+//    public void printStudentsSync() {
+//        List<Student> students = studentRepository.findAll(PageRequest.of(0,6)).getContent();
+//
+//        printStudents(students.subList(0, 2));
+//        new Thread(() -> printStudents(students.subList(2,4))).start();
+//        new Thread(() -> printStudents(students.subList(4,6))).start();
+//    }
+
 }
 

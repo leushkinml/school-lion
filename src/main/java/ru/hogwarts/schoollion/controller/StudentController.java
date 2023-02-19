@@ -128,4 +128,15 @@ public class StudentController {
         Double averageAge = studentService.studentsAverageAge();
         return ResponseEntity.ok(averageAge);
     }
+
+    // Работа с Потоком и Синхронизацией
+    @GetMapping("/print-students-lion")
+    public void printStudentsLion() {
+        studentService.printStudentsLion();
+    }
+
+    @GetMapping("/print-students-lion-sync")
+    public void printStudentsLionSync() {
+        studentService.printStudentsLionSync();
+    }
 }
