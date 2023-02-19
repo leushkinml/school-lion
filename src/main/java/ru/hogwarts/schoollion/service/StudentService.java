@@ -186,6 +186,7 @@ public class StudentService {
         thread2.start();
     }
     public Integer countSync = 1;     // Для вывода потоков
+
     public void printStudentsSync(int number) {
 
         List<Student> students = studentRepository.findAll();
@@ -195,6 +196,33 @@ public class StudentService {
         }
     }
 
+//    public void printStudents(int number) {
+//
+//        List<Student> students = new ArrayList<>();
+//        students.add(getStudentById(16L));
+//        students.add(getStudentById(17L));
+//        students.add(getStudentById(18L));
+//        students.add(getStudentById(19L));
+//        students.add(getStudentById(20L));
+//        students.add(getStudentById(21L));
+//        System.out.println("Студент и номер в списке: " + students.get(number).getName() + ". Порядок вывода: " + count);
+//        count++;
+//    }
+//    public void printStudentsSync(int number) {
+//
+//        List<Student> students2 = new ArrayList<>();
+//        students2.add(getStudentById(16L));
+//        students2.add(getStudentById(17L));
+//        students2.add(getStudentById(18L));
+//        students2.add(getStudentById(19L));
+//        students2.add(getStudentById(20L));
+//        students2.add(getStudentById(21L));
+//
+//        synchronized (flag) {
+//            System.out.println("Студент и номер в списке: " + students2.get(number).getName() + ". Порядок вывода: " + countSync);
+//            countSync++;
+//        }
+//    }
 
 
 
