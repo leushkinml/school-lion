@@ -50,9 +50,11 @@ public class FacultyService {
     public Set<Faculty> findByColor(String color) {
         return facultyRepository.findByColor(color);
     }
+
     public Set<Faculty> findFacultyByColorOrNameIgnorCase(String color, String name) {
         return facultyRepository.findByColorOrNameIgnoreCase(color, name);
     }
+
     public List<Faculty> findFacultiesByNameIgnoreCase(String name) {
         return facultyRepository.findFacultiesByNameIgnoreCase(name);
     }
@@ -80,9 +82,9 @@ public class FacultyService {
     // Тестирование скорости вычисления
     public String testMaxSpeed() throws InterruptedException {
         long start1 = System.nanoTime();
-        int sum1 = Stream.iterate(1, a -> a +1)
+        int sum1 = Stream.iterate(1, a -> a + 1)
                 .limit(1_000_000)
-                .reduce(0, (a, b) -> a + b );
+                .reduce(0, (a, b) -> a + b);
 
         Thread.sleep(1000);
         long finish1 = System.nanoTime();
@@ -99,10 +101,10 @@ public class FacultyService {
         long elapsed2 = finish2 - start2;
 
         long start3 = System.nanoTime();
-        int sum3 = Stream.iterate(1, a -> a +1)
+        int sum3 = Stream.iterate(1, a -> a + 1)
                 .parallel()
                 .limit(1_000_000)
-                .reduce(0, (a, b) -> a + b );
+                .reduce(0, (a, b) -> a + b);
 
         Thread.sleep(1000);
         long finish3 = System.nanoTime();
@@ -112,36 +114,5 @@ public class FacultyService {
                 "\n" + "2-ой метод: Время вычисления,нс: " + elapsed2 + ". Результат вычисления: " + sum2 +
                 "\n" + "3-ий метод: Время вычисления,нс: " + elapsed3 + ". Результат вычисления: " + sum3;
     }
-//
-//    public String getMaxSpeedTwo() throws InterruptedException {
-//        long start2 = System.nanoTime();
-//        int sum2 = Stream.iterate(1, a -> a + 1)
-//                .limit(1_000_000)
-//                .parallel()
-//                .reduce(0, (a, b) -> a + b);
-//
-//        Thread.sleep(1000);
-//        long finish2 = System.nanoTime();
-//        long elapsed2 = finish2 - start2;
-//
-//
-//
-//
-//        return "Прошло времени, 1-ый метод, нс: " + elapsed1 + ". Результат вычисления: " + sum1;
-//    }
-//
-//    public String getMaxSpeedThree() throws InterruptedException {
-//
-//        long start3 = System.nanoTime();
-//        int sum3 = Stream.iterate(1, a -> a +1)
-//                .parallel()
-//                .limit(1_000_000)
-//                .reduce(0, (a, b) -> a + b );
-//
-//        Thread.sleep(1000);
-//        long finish3 = System.nanoTime();
-//        long elapsed3 = finish3 - start3;
-//        return "Прошло времени, 1-ый метод, нс: " + elapsed1 + ". Результат вычисления: " + sum1;
-//    }
 }
 

@@ -1,4 +1,5 @@
 package ru.hogwarts.schoollion.controller;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -6,7 +7,8 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.hogwarts.schoollion.model.Faculty;
 import ru.hogwarts.schoollion.service.FacultyService;
 
-import java.util.*;
+import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("faculty")
@@ -30,7 +32,6 @@ public class FacultyController {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
     }
 
-
     @GetMapping("{id}")
     public Faculty getFaculty(@PathVariable Long id) {
         Faculty faculty = facultyService.getFacultyById(id);
@@ -44,6 +45,7 @@ public class FacultyController {
     public Set<Faculty> findFacultysByColor(@RequestParam(required = false) String color) {
         return facultyService.findByColor(color);
     }
+
     @GetMapping("by-color-or-name")
     public Set<Faculty> findFacultyByColorOrNameIgnorCase(
             @RequestParam(required = false) String color,
@@ -90,21 +92,15 @@ public class FacultyController {
     // Измерение скорости Stream API
     @GetMapping("/test-max-speed")
     public ResponseEntity<String> testMaxSpeed() throws InterruptedException {
-        String  maxSpeed = facultyService.testMaxSpeed();
+        String maxSpeed = facultyService.testMaxSpeed();
         return ResponseEntity.ok(maxSpeed);
     }
-//    @GetMapping("/test-max-speed-2")
-//    public ResponseEntity<Integer> getMaxSpeedTwo() {
-//        Integer maxSpeed = facultyService.getMaxSpeedTwo();
-//        return ResponseEntity.ok(maxSpeed);
-//    }
-//    @GetMapping("/test-max-speed-3")
-//    public ResponseEntity<Integer> getMaxSpeedThree() {
-//        Integer maxSpeed = facultyService.getMaxSpeedThree();
-//        return ResponseEntity.ok(maxSpeed);
-//    }
-
 }
+
+
+
+
+
 
 
 

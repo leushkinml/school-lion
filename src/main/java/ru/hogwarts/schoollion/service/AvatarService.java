@@ -4,10 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -36,7 +32,6 @@ public class AvatarService {
 
     private final StudentService studentService;
     private final AvatarRepository avatarRepository;
-
 
     public AvatarService(StudentService studentService, AvatarRepository avatarRepository) {
         this.studentService = studentService;
@@ -75,7 +70,6 @@ public class AvatarService {
         return avatarRepository.findByStudentId(studentId).orElse(new Avatar());
     }
 
-
     public List<Avatar> getAllAvatarsByPage(Integer pageNumber, Integer pageSize) {
         logger.debug("Called method: public List<Avatar> getAllAvatarsByPage(Integer pageNumber, Integer pageSize) ");
         PageRequest pageRequest = PageRequest.of(pageNumber - 1, pageSize);
@@ -86,7 +80,7 @@ public class AvatarService {
         logger.debug("Called method: private byte[] generateAvatarPreview(Path filePath)");
         try (InputStream is = Files.newInputStream(filePath);
              BufferedInputStream bis = new BufferedInputStream(is, 1024);
-             ByteArrayOutputStream baos = new ByteArrayOutputStream()){
+             ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
             BufferedImage image = ImageIO.read(bis);
 
             int height = image.getHeight() / (image.getWidth() / 100);
@@ -100,6 +94,7 @@ public class AvatarService {
         }
 
     }
+
     private String getExtension(String fileName) {
         logger.debug("Called method: private String getExtension(String fileName) ");
         return fileName.substring(fileName.lastIndexOf(".") + 1);

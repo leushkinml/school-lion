@@ -3,7 +3,6 @@ package ru.hogwarts.schoollion.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 import ru.hogwarts.schoollion.model.Student;
 import ru.hogwarts.schoollion.repository.StudentRepository;
@@ -36,6 +35,7 @@ public class StudentService {
 
     public List<Student> findStudentByAge(int age) {
         logger.debug("Called method: public List<Student> findStudentByAge(int age) ");
+        if (age <= 0) throw new RuntimeException("The age is less than 0");
         return studentRepository.findStudentByAge(age);
     }
 
@@ -48,6 +48,7 @@ public class StudentService {
         logger.debug("Called method: public void deleteStudent(Long studentId) ");
         studentRepository.deleteById(studentId);
     }
+
     public Student deleteStudentandReturn(Long studentId) {
         logger.debug("Called method: public Student deleteStudentandReturn(Long studentId) ");
         studentRepository.deleteById(studentId);
@@ -83,11 +84,13 @@ public class StudentService {
         logger.debug("Called method: public List<Student> getFiveStudentsWithBiggestIdInSchool() ");
         return studentRepository.getFiveStudentsWithBiggestIdInSchool();
     }
+
     public List<Student> getAllStudentsByPage(Integer pageNumber, Integer pageSize) {
         logger.debug("Called method: public List<Student> getAllStudentsByPage(Integer pageNumber, Integer pageSize) ");
         PageRequest pageRequest = PageRequest.of(pageNumber - 1, pageSize);
         return studentRepository.findAll(pageRequest).getContent();
     }
+
     // Работа со Stream API
     public List<String> getStudentsWithNameStartWith(String letter) {
 
@@ -122,6 +125,5 @@ public class StudentService {
                 mapToInt(Student::getAge).average().getAsDouble();
         return studentsAverageAge;
     }
-
 }
 

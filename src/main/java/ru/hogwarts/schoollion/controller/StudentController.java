@@ -20,7 +20,8 @@ public class StudentController {
         this.studentService = studentService;
     }
 
-    @GetMapping("/return-faculty-by-student-id/{studentIdForReturnFaculty}")   // GET http://localhost:8080/student/{studentIdForReturnFaculty}
+    @GetMapping("/return-faculty-by-student-id/{studentIdForReturnFaculty}")
+    // GET http://localhost:8080/student/{studentIdForReturnFaculty}
     public ResponseEntity getStudentByIdAndReturnFacultybyLion(@PathVariable Long studentIdForReturnFaculty) {
         if (studentIdForReturnFaculty != null && studentIdForReturnFaculty > 0) {
             Student student = studentService.getStudentById(studentIdForReturnFaculty);
@@ -128,55 +129,3 @@ public class StudentController {
         return ResponseEntity.ok(averageAge);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-//    @DeleteMapping("{studentId}")
-//    public ResponseEntity<Student> deleteStudentByZurab(@PathVariable Long studentId) {
-//        studentService.deleteStudent(studentId);
-//        return ResponseEntity.ok().build();
-//    }
-
-
-//    @PostMapping
-//    public Student createStudentByZurab(@RequestBody Student student) {
-//        return studentService.createStudent(student);
-//    }
-
-//    @GetMapping   // GET http://localhost:8080/student
-//    public ResponseEntity getStudentByZurab(@RequestParam(required = false) String name,
-//                                     @RequestParam(required = false) Integer studentAge,
-//                                     @RequestParam(required = false) Long studentId) {
-//        if (name != null && !name.isBlank()) {
-//            return ResponseEntity.ok(studentService.findStudentByNameIgnoreCase(name));
-//        }
-//        if (studentAge != null && studentAge > 0) {
-//            return ResponseEntity.ok(studentService.findStudentByAge(studentAge));
-//        }
-//        if (studentId != null && studentId > 0) {
-//            Student student = studentService.getStudentById(studentId);
-//            if (student == null) {
-//                return ResponseEntity.notFound().build();
-//            }
-//            return ResponseEntity.ok(student);
-//        }
-//        return ResponseEntity.ok(studentService.getAllStudent());
-//    }
-
-//    @PutMapping()
-//    public ResponseEntity<Student> updateStudentByZurab(@RequestBody Student student) {
-//        Student updateStudent = studentService.updateStudent(student);
-//        if (updateStudent == null) {
-//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-//        }
-//        return ResponseEntity.ok(updateStudent);
-//    }

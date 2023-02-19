@@ -1,7 +1,5 @@
 package ru.hogwarts.schoollion.controller;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,7 +26,6 @@ public class AvatarController {
     public AvatarController(AvatarService avatarService) {
         this.avatarService = avatarService;
     }
-
 
     @PostMapping(value = "/{studentId}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)   // Работа с ФАЙЛАМИ
     public ResponseEntity<String> uploadAvatar(@PathVariable Long studentId, @RequestParam MultipartFile avatar) throws IOException {
@@ -57,7 +54,7 @@ public class AvatarController {
         Path path = Path.of(avatar.getFilePath());
 
         try (InputStream is = Files.newInputStream(path);
-             OutputStream os = response.getOutputStream()){
+             OutputStream os = response.getOutputStream()) {
             response.setStatus(200);
             response.setContentType(avatar.getMediaType());
             response.setContentLength(Math.toIntExact(avatar.getFileSize()));
@@ -66,11 +63,11 @@ public class AvatarController {
     }
 
     @GetMapping("list-of-avatar-by-page")
-   public ResponseEntity<List<Avatar>> getListOfAvatarsByPage(@RequestParam("page") Integer pageNumber,
-                                                              @RequestParam("size") Integer pageSize)
+    public ResponseEntity<List<Avatar>> getListOfAvatarsByPage(@RequestParam("page") Integer pageNumber,
+                                                               @RequestParam("size") Integer pageSize)
             throws IOException {
         List<Avatar> avatars = avatarService.getAllAvatarsByPage(pageNumber, pageSize);
 
         return ResponseEntity.ok(avatars);
-     }
+    }
 }

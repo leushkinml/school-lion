@@ -2,6 +2,7 @@ package ru.hogwarts.schoollion.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import ru.hogwarts.schoollion.model.Faculty;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
